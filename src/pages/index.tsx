@@ -20,6 +20,7 @@ export default function Home(): JSX.Element {
     'images',
     // TODO AXIOS REQUEST WITH PARAM
     
+    
     // TODO GET AND RETURN NEXT PAGE PARAM
   );
 
