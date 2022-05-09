@@ -8,6 +8,19 @@ import { api } from '../services/api';
 import { Loading } from '../components/Loading';
 import { Error } from '../components/Error';
 
+interface Image {
+  title: string;
+  description: string;
+  url: string;
+  ts: string;
+  id: string;
+}
+
+type GetImagesResponse = {
+  after: string;
+  data: Image[];
+}
+
 export default function Home(): JSX.Element {
   const {
     data,
@@ -18,14 +31,22 @@ export default function Home(): JSX.Element {
     hasNextPage,
   } = useInfiniteQuery(
     'images',
-    // TODO AXIOS REQUEST WITH PARAM
-    
-    
-    // TODO GET AND RETURN NEXT PAGE PARAM
+    async ({ pageParam = null }): Promise<GetImagesResponse> => {
+      const response = await api.get('/api/images', {
+        params: {
+          after: pageParam,
+        },
+      });
+
+      return response.data;
+    },
+    {
+      getNextPageParam: lastPage => lastPage?.after || null,
+    }
   );
 
   const formattedData = useMemo(() => {
-    // TODO FORMAT AND FLAT DATA ARRAY
+    return data?.pages.flatMap(pageData => pageData.data.flat())
   }, [data]);
 
   // TODO RENDER LOADING SCREEN
